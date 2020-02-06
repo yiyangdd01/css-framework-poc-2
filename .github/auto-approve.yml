@@ -1,0 +1,4 @@
+autoApproveDependabot: false
+autoApproveRenovatebot: false
+dependabotLogin: 'dependabot[bot]'
+renovatebotLogin: hk01bot-write

@@ -1,0 +1,22 @@
+policy:
+  approval:
+    - unprotected
+  disapproval:
+    requires:
+      organizations:
+        - hk01-digital
+approval_rules:
+  -
+    name: unprotected
+    if:
+      targets_branch:
+        pattern: ^development|^release|^master$
+    options:
+      allow_author: true
+      allow_contributor: true
+      invalidate_on_push: true
+      ignore_update_merges: true
+    requires:
+      count: 0
+      organizations:
+        - hk01-digital
