@@ -256,5 +256,7 @@ docs
 README
 coverage/
 
+docker-compose.yml
+
 # ignore .dockerignore for multistage build
 .dockerignore
