@@ -70,7 +70,11 @@ script: |-
     --entrypoint "" \
     $IMAGE \
     bash -c "cp -R /srv/.next /s3_upload/_next"
-
+    
+  # remove source map in s3 if production
+  if [ "production" == "${ENVIRONMENT}" ]; then
+    sudo find $PWD/s3_upload -name '*.js.map' -exec rm -f {} \;
+  fi
 deploy: []
 # ### upload static to s3, ecr may reference to s3 file
 # - provider: s3
