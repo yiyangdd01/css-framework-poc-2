@@ -1,0 +1,10 @@
+extends: standard
+
+env:
+  jest: true
+
+rules:
+  camelcase:
+    - warn
+    - ignoreDestructuring: true
+  no-unused-vars: warn

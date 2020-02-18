@@ -1,0 +1,22 @@
+version: "2.3"
+
+services:
+  frontend:
+    build:
+      context: .
+      # a shortcut for debug multi-stage build stage
+      # target: builder
+      args:
+      - NPM_TOKEN=$NPM_TOKEN
+      - GITHUB_TOKEN=$GITHUB_TOKEN
+    environment:
+    # next requires `production` to load `/_next/static`
+    - NODE_ENV=production
+    - PORT=3000
+    volumes:
+    # next backend usually requires runtime config, e.g. env
+    - ".env.demo:/srv/.env"
+    ports:
+    - "3000:3000"
+    # entrypoint overwrite to keep the container for debug
+    # entrypoint: tail -f /dev/null
