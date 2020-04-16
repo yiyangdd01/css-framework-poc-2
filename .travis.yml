@@ -1,22 +1,27 @@
+dist: xenial
+os: linux
+language: shell
+
+# notifications:
+#   slack:
+#     rooms:
+#       secure:
+#     on_success: change
+#     on_failure: always
+#     on_pull_requests: false
+
+stages:
+  - name: 'Test, Build and Deploy'
+    if: branch =~ ^master$|^development$|^release
+
 jobs:
+  fast_finish: true
+  allow_failures:
+    - name: Cypress Test
   include:
-    - stage: development
-      language: python
-      group: stable
-      dist: trusty
-      os: linux
-      services:
-        - docker
-      cache: pip
-
-      # notifications:
-      #   slack:
-      #     rooms:
-      #       secure:
-      #     on_success: change
-      #     on_failure: always
-      #     on_pull_requests: false
-
+    - stage: 'Test, Build and Deploy'
+      name: 'Lint, Unit Test, Build and Deploy'
+      if: branch =~ ^master$|^development$|^release
       before_install: |-
         if [ "master" == "${TRAVIS_BRANCH}" ]; then
           for env_value in $(compgen -v |grep '.*_PRODUCTION$'); do
@@ -35,18 +40,14 @@ jobs:
           ENVIRONMENT="development"
         fi
       install: |-
-        # install awscli for ecr upload
-        pip install awscli --upgrade
+        # install awscli v2 for ecr upload
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
       script: |-
         set -e
-        tag_build_num="v${TRAVIS_BUILD_NUMBER}-build"
-        aws_registry_id="${AWS_REGISTRY_ID}"
-        aws_region="${AWS_REGION}"
-        aws_ecr_name="${AWS_ECR_NAME}"
-        export IMAGE="${aws_registry_id}.dkr.ecr.${aws_region}.amazonaws.com/${aws_ecr_name}:${tag_build_num}"
-        export IMAGE_LATEST="${aws_registry_id}.dkr.ecr.${aws_region}.amazonaws.com/${aws_ecr_name}:latest"
-        export ECR_LOGIN="aws ecr get-login --registry-ids ${aws_registry_id} --region ${aws_region} --no-include-email"
-        # NAME="$aws_ecr_name"
+        export IMAGE="${AWS_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_NAME}:${TRAVIS_BUILD_NUMBER}"
+        export IMAGE_LATEST="${AWS_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_NAME}:latest"
         cp ".env.${ENVIRONMENT}" .env
         # build test image to run test
         docker build -t test \
@@ -82,17 +83,19 @@ jobs:
         #   bucket: $AWS_S3_BUCKET
         #   region: $AWS_REGION
         #   local_dir: s3_upload
-        #   skip_cleanup: true
+        #   cleanup: false
         #   on:
         #     all_branches: true
 
         # ### upload to ecr
         # - provider: script
         #   script: >-
-        #     $(AWS_ACCESS_KEY_ID=$AWS_ECR_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_ECR_SECRET_ACCESS_KEY $ECR_LOGIN)
+        #     AWS_ACCESS_KEY_ID=$AWS_ECR_ACCESS_KEY_ID
+        #     AWS_SECRET_ACCESS_KEY=$AWS_ECR_SECRET_ACCESS_KEY
+        #     aws ecr get-login-password | docker login --username AWS --password-stdin
+        #     ${AWS_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
         #     && docker push "$IMAGE"
         #     && docker push "$IMAGE_LATEST"
-        #   skip_cleanup: true
+        #   cleanup: false
         #   on:
         #     all_branches: true
-      if: branch =~ ^master$|^development$|^release
