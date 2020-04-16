@@ -57,7 +57,7 @@ jobs:
         docker run --rm \
           -v "$PWD/coverage:/srv/coverage" \
           test bash -c "
-          yarn install --ignore-engines --frozen-lockfile &&
+          yarn install --frozen-lockfile &&
           yarn test --coverage --no-watch"
         # upload coverage report to codecov
         # bash <(curl -s https://codecov.io/bash) -t "${CODECOV_TOKEN}"
