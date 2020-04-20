@@ -46,7 +46,7 @@ jobs:
         sudo ./aws/install
       script: |-
         set -e
-        export IMAGE="${AWS_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_NAME}:${TRAVIS_BUILD_NUMBER}"
+        export IMAGE="${AWS_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_NAME}:v${TRAVIS_BUILD_NUMBER}-build"
         export IMAGE_LATEST="${AWS_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_NAME}:latest"
         cp ".env.${ENVIRONMENT}" .env
         # build test image to run test
