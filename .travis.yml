@@ -22,6 +22,8 @@ jobs:
     - stage: 'Test, Build and Deploy'
       name: 'Lint, Unit Test, Build and Deploy'
       if: branch =~ ^master$|^development$|^release
+      language: node_js
+      node_js: 10
       before_install: |-
         if [ "master" == "${TRAVIS_BRANCH}" ]; then
           for env_value in $(compgen -v |grep '.*_PRODUCTION$'); do
