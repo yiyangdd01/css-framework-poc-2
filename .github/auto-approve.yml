@@ -1,4 +1,6 @@
-autoApproveDependabot: false
-autoApproveRenovatebot: false
-dependabotLogin: 'dependabot[bot]'
-renovatebotLogin: hk01bot-write
+# https://github.com/hk01-digital/github-bot-auto-approve#usage
+enable: true
+login:
+  - dependabot[bot]
+  - hk01bot-write
+  - hk01bot

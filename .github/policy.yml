@@ -1,13 +1,16 @@
 policy:
   approval:
     - unprotected
+    - hk01-digital approved
   disapproval:
     requires:
       organizations:
         - hk01-digital
 approval_rules:
-  -
-    name: unprotected
+  - name: unprotected
+    requires:
+      count: 0
+  - name: hk01-digital approved
     if:
       targets_branch:
         pattern: ^development|^release|^master$
@@ -17,6 +20,6 @@ approval_rules:
       invalidate_on_push: true
       ignore_update_merges: true
     requires:
-      count: 0
+      count: 1
       organizations:
         - hk01-digital
