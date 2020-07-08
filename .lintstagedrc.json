@@ -1,12 +1,5 @@
 {
-  "linters": {
-    "*.json": ["prettier --write", "git add"],
-    "*.md": ["prettier --write", "git add"],
-    "*.{ts,tsx}": [
-      "import-sort --write",
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ]
-  }
+  "*.json": ["prettier --write"],
+  "*.md": ["prettier --write"],
+  "*.{ts,tsx}": ["import-sort --write", "prettier --write", "eslint --fix"]
 }
