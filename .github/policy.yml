@@ -1,7 +1,10 @@
 policy:
   approval:
     - unprotected
-    - hk01-digital approved
+    - or:
+        - "hk01-digital approved"
+        - "dependabot doing security fix"
+        - "hk01bot-write doing renovate"
   disapproval:
     requires:
       organizations:
@@ -23,3 +26,38 @@ approval_rules:
       count: 1
       organizations:
         - hk01-digital
+  - name: dependabot doing security fix
+    if:
+      only_changed_files:
+        paths:
+          - package.json
+          - yarn.lock
+          - package-lock.json
+      has_author_in:
+        users:
+          - 'dependabot[bot]'
+      only_has_contributors_in:
+        users:
+          - 'dependabot[bot]'
+      targets_branch:
+        pattern: development
+    requires:
+      count: 0
+  - name: "hk01bot-write doing renovate"
+    if:
+      only_changed_files:
+        paths:
+          - package.json
+          - package-lock.json
+          - yarn.lock
+      has_author_in:
+        users:
+          - hk01bot-write
+      only_has_contributors_in:
+        users:
+          - hk01bot-write
+          - renovate-bot
+      targets_branch:
+        pattern: development
+    requires:
+      count: 0
