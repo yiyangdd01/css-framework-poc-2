@@ -6,6 +6,8 @@ ARG NPM_TOKEN
 ENV NPM_TOKEN=${NPM_TOKEN}
 
 COPY package.json yarn.lock ./
+# - add patches before yarn
+COPY patches ./patches
 
 RUN /base/scripts/token-init.sh \
     && yarn --production
